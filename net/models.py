@@ -2,6 +2,12 @@ from django.db import models
 
 
 class NetMember(models.Model):
+    HIERARCHY_CHOICES = [
+        (0, 'Завод'),
+        (1, 'Розничная сеть'),
+        (2, 'Индивидуальный предприниматель'),
+    ]
+
     name = models.CharField(
         max_length=100,
         verbose_name='название сети'
@@ -19,6 +25,11 @@ class NetMember(models.Model):
         null=True,
         blank=True,
     )
+    level = models.SmallIntegerField(
+        verbose_name='уровень иерархии',
+        choices=HIERARCHY_CHOICES,
+        default=0
+    )
     debt = models.DecimalField(
         max_digits=15,
         decimal_places=2,
@@ -29,6 +40,13 @@ class NetMember(models.Model):
         verbose_name='время создания',
         auto_now_add=True,
     )
+
+    def __str__(self):
+        return f"id: {self.pk} | name: {self.name}"
+
+    class Meta:
+        verbose_name = 'звено сети'
+        verbose_name_plural = 'звенья сети'
 
 
 class Contact(models.Model):
@@ -54,6 +72,13 @@ class Contact(models.Model):
         verbose_name='номер дома',
     )
 
+    def __str__(self):
+        return f"id: {self.pk}"
+
+    class Meta:
+        verbose_name = 'контакт сети'
+        verbose_name_plural = 'контакты сети'
+
 
 class Product(models.Model):
     name = models.CharField(
@@ -73,5 +98,9 @@ class Product(models.Model):
         verbose_name='поставщик'
     )
 
+    def __str__(self):
+        return f"id: {self.pk} | {self.name}"
 
-
+    class Meta:
+        verbose_name = 'продукт'
+        verbose_name_plural = 'продукты'
